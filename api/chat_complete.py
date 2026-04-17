@@ -111,17 +111,19 @@ def find_relevant_products(query):
     """Find relevant products based on query"""
     query_lower = query.lower()
     
-    # Category mapping
+    # Category mapping cu sluguri corecte din WooCommerce
     if 'piscin' in query_lower and any(word in query_lower for word in ['tip', 'model', 'ofer']):
         return get_products_by_category('piscine', 6)
-    elif 'pompă' in query_lower or 'pompe' in query_lower:
-        return get_products_by_category('pompe-caldura', 5)
+    elif 'pompă' in query_lower or 'pompe' in query_lower or 'căldur' in query_lower or 'caldur' in query_lower:
+        return get_products_by_category('pompe-de-caldura', 5)
     elif 'filtr' in query_lower:
         return get_products_by_category('filtrare', 5)
     elif 'led' in query_lower or 'iluminat' in query_lower:
         return get_products_by_category('iluminare', 5)
-    elif 'clor' in query_lower or 'tratare' in query_lower:
-        return get_products_by_category('tratare', 5)
+    elif 'clor' in query_lower or 'tratare' in query_lower or 'chimic' in query_lower:
+        return get_products_by_category('chimicale-pentru-piscina', 5)
+    elif 'încălz' in query_lower or 'incalz' in query_lower:
+        return get_products_by_category('incalzire-piscina', 5)
     else:
         # Generic search
         return search_woocommerce_products(query, 5)
