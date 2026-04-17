@@ -24,7 +24,7 @@ WP_CONSUMER_SECRET = os.getenv('WP_CONSUMER_SECRET')
 # Complete Category Mapping - ALL 76 categories with comprehensive keywords
 CATEGORY_KEYWORDS = {
     # Încălzire (138 produse)
-    'pompă|pompe|căldur|caldur|heat|heatpump': 'pompe-de-caldura',
+    'pompă căldur|pompe căldur|caldur|heat pump|heatpump|încălzire': 'pompe-de-caldura',
     'încălz|incalz|heating|warm': 'incalzire-piscina',
     'solar|soare': 'incalzire-solara',
     'schimbat|exchanger|heat exchanger': 'schimbatoare-de-caldura',
@@ -106,7 +106,7 @@ CATEGORY_KEYWORDS = {
     'sifon|fund|drain': 'componente-abs-si-pvc',
     
     # Pompe (75 produse)
-    'pompă piscina|circulation|pump': 'pompe-piscina',
+    'pompă piscina|pompă recirculare|pompă filtrare|circulation|pump|recirculare': 'pompe-piscina',
     'piese pompă|pump parts': 'piese-schimb-pompe',
     
     # Accesorii (167 produse)
