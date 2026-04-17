@@ -121,7 +121,7 @@ CATEGORY_KEYWORDS = {
     'tablou electric|electrical panel': 'tablouri-comanda',
     
     # Oferte
-    'lichidare|oferta|discount|sale|promo': 'lichidari-de-stoc',
+    'lichidare|oferta|discount|sale|promo|reducere|reduceri|oferte': 'lichidari-de-stoc',
     'aquapiscine|brand': 'aquapiscine'
 }
 
