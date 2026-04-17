@@ -281,5 +281,10 @@ def extract_summary(text: str) -> str:
     
     return ' '.join(summary_lines) if summary_lines else text[:200]
 
+def handler(request):
+    """Vercel serverless function handler"""
+    with app.request_context(request.environ):
+        return app.full_dispatch_request()
+
 if __name__ == '__main__':
     app.run(debug=True)

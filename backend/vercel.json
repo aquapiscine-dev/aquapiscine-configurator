@@ -2,17 +2,30 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/*.py",
+      "src": "api/chat.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "api/configurator.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "api/analyze_image.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "api/$1.py"
+      "src": "/api/chat",
+      "dest": "api/chat.py"
+    },
+    {
+      "src": "/api/configurator",
+      "dest": "api/configurator.py"
+    },
+    {
+      "src": "/api/analyze_image",
+      "dest": "api/analyze_image.py"
     }
-  ],
-  "env": {
-    "PYTHON_VERSION": "3.11"
-  }
+  ]
 }

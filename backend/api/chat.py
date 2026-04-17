@@ -253,5 +253,10 @@ def generate_suggestions(user_message: str, ai_response: str) -> list:
     
     return suggestions[:3]
 
+def handler(request):
+    """Vercel serverless function handler"""
+    with app.request_context(request.environ):
+        return app.full_dispatch_request()
+
 if __name__ == '__main__':
     app.run(debug=True)

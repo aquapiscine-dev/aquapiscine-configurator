@@ -335,5 +335,10 @@ def determine_next_step(conversation: dict) -> str:
     else:
         return "summary"
 
+def handler(request):
+    """Vercel serverless function handler"""
+    with app.request_context(request.environ):
+        return app.full_dispatch_request()
+
 if __name__ == '__main__':
     app.run(debug=True)
