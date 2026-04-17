@@ -9,7 +9,6 @@ import random
 import requests
 from requests.auth import HTTPBasicAuth
 from groq import Groq
-from category_mapping import CATEGORY_KEYWORDS
 
 # Groq API Keys
 GROQ_KEYS = [
@@ -21,6 +20,64 @@ GROQ_KEYS = [
 WP_URL = os.getenv('WP_URL', 'https://aquapiscine.ro')
 WP_CONSUMER_KEY = os.getenv('WP_CONSUMER_KEY')
 WP_CONSUMER_SECRET = os.getenv('WP_CONSUMER_SECRET')
+
+# Complete Category Mapping - 76 categories
+CATEGORY_KEYWORDS = {
+    'pompă|pompe|căldur|caldur|heat pump': 'pompe-de-caldura',
+    'încălz|incalz|heating': 'incalzire-piscina',
+    'solar': 'incalzire-solara',
+    'schimbat|exchanger': 'schimbatoare-de-caldura',
+    'electric|încălzitor': 'incalzitoare-electrice',
+    'filtr|filter': 'filtrare-piscina',
+    'kit filtr': 'kituri-filtrare',
+    'material filtrant|nisip|sticla': 'material-filtrant',
+    'robot|aspirat|curat|clean': 'curatare-piscina',
+    'aspirator automat': 'aspiratoare-automate',
+    'aspirator manual': 'aspiratoare-manuale',
+    'clor|chimic|tratare|ph|alg': 'tratare-piscina',
+    'chimicale piscina': 'chimicale-pentru-piscina',
+    'chimicale spa': 'chimicale-pentru-spa',
+    'electroliz|sare|salt': 'aparate-electroliza-si-hidroliza',
+    'substanțe tratare': 'substante-pentru-tratare',
+    'sterilizator|uv': 'sterilizatoare-uv',
+    'trusă analiză|test': 'truse-de-analiza',
+    'pompă dozatoare|doser': 'pompe-dozatoare',
+    'acoperire|prelata|cover': 'acoperire-piscina',
+    'lamelara|lamele': 'acoperire-lamelara',
+    'policarbonat': 'acoperire-policarbonat',
+    'placare|finisa': 'placare-piscina',
+    'liner|folii|folie': 'liner-si-accesorii',
+    'mozaic': 'mozaic',
+    'dale|bordur': 'dale-si-borduri',
+    'adeziv': 'adezivi',
+    'chit|rosturi': 'chit-de-rosturi',
+    'hidroizola': 'hidroizolatii',
+    'vopsea piscin': 'vopsea-pentru-piscine',
+    'decorațiuni|decor': 'decoratiuni-piscina',
+    'led|iluminat|lumina|light': 'iluminare-piscine',
+    'piscin|pool|bazin': 'tipuri-de-piscine',
+    'fibră|fibra|fiberglass': 'piscine-fibra-de-sticla',
+    'isoblok': 'piscine-isoblok',
+    'suprateran': 'piscine-supraterane',
+    'spa|jacuzzi|hidromasaj': 'sauna-si-spa',
+    'spa portabil': 'spa-portabil',
+    'sauna|saune': 'saune-uscate',
+    'sauna umeda': 'saune-umede',
+    'cabina sauna': 'cabine-saune',
+    'soba electrica': 'sobe-electrice',
+    'generator abur': 'generatoare-de-abur',
+    'dezumidificator': 'dezumidificatoare',
+    'lemn sauna': 'lemn-si-accesorii',
+    'arome|esente': 'arome-si-solutii-de-curatare',
+    'abs|pvc|component': 'componente-abs-si-pvc',
+    'țevi|fitinguri|teava': 'tevi-si-fitinguri',
+    'pompă piscina|circulation': 'pompe-piscina',
+    'accesor': 'accesorii-piscine',
+    'scara|scarita|ladder|balustrad': 'scari-si-balustrade',
+    'echipament exterior': 'echipamente-exterioare',
+    'tablou|panou comanda': 'panouri-de-comanda',
+    'lichidare|oferta|discount': 'lichidari-de-stoc'
+}
 
 SYSTEM_PROMPT = """Ești asistent vânzări AI pentru AquaPiscine.ro.
 
