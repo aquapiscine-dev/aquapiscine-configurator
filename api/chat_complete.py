@@ -111,7 +111,7 @@ def find_relevant_products(query):
     """Find relevant products based on query"""
     query_lower = query.lower()
     
-    # Mapping complet categorii WooCommerce
+    # Mapping complet categorii WooCommerce (sluguri verificate)
     category_map = {
         'pompă|pompe|căldur|caldur': 'pompe-de-caldura',
         'filtr': 'filtrare',
@@ -120,16 +120,13 @@ def find_relevant_products(query):
         'clor|chimic|tratare|alg': 'chimicale-pentru-piscina',
         'încălz|incalz': 'incalzire-piscina',
         'acoperire|prelata': 'acoperire-piscina',
-        'scara|scarita': 'scari-piscina',
-        'duș|dus': 'dusuri-piscina',
         'spa|jacuzzi|hidromasaj': 'cazi-hidromasaj',
         'sauna': 'cabine-saune',
         'electroliz|sare': 'aparate-electroliza-si-hidroliza',
-        'liner|folii': 'liner-piscina',
-        'skimmer': 'skimmere',
-        'duze|jet': 'duze-piscina',
-        'vana|robinet': 'vane-piscina',
-        'termostat|control': 'automatizari-piscina'
+        'liner|folii|folie': 'liner-si-accesorii',
+        'mozaic': 'mozaic',
+        'gresie|placi': 'gresie-piscina',
+        'dale|bordur': 'dale-si-borduri'
     }
     
     # Verifică fiecare pattern
