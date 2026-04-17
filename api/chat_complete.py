@@ -9,6 +9,7 @@ import random
 import requests
 from requests.auth import HTTPBasicAuth
 from groq import Groq
+from category_mapping import CATEGORY_KEYWORDS
 
 # Groq API Keys
 GROQ_KEYS = [
@@ -108,38 +109,16 @@ def get_products_by_category(category_slug, per_page=5):
         return []
 
 def find_relevant_products(query):
-    """Find relevant products based on query"""
+    """Find relevant products based on query - TOATE cele 76 categorii"""
     query_lower = query.lower()
     
-    # Mapping complet categorii WooCommerce (sluguri verificate)
-    category_map = {
-        'pompă|pompe|căldur|caldur': 'pompe-de-caldura',
-        'filtr': 'filtrare',
-        'robot|aspirat|curat': 'aspiratoare-automate',
-        'led|iluminat|lumina': 'iluminare',
-        'clor|chimic|tratare|alg': 'chimicale-pentru-piscina',
-        'încălz|incalz': 'incalzire-piscina',
-        'acoperire|prelata': 'acoperire-piscina',
-        'spa|jacuzzi|hidromasaj': 'cazi-hidromasaj',
-        'sauna': 'cabine-saune',
-        'electroliz|sare': 'aparate-electroliza-si-hidroliza',
-        'liner|folii|folie': 'liner-si-accesorii',
-        'mozaic': 'mozaic',
-        'gresie|placi': 'gresie-piscina',
-        'dale|bordur': 'dale-si-borduri'
-    }
-    
-    # Verifică fiecare pattern
-    for pattern, category in category_map.items():
+    # Verifică fiecare pattern din mapping-ul complet
+    for pattern, category in CATEGORY_KEYWORDS.items():
         keywords = pattern.split('|')
         if any(keyword in query_lower for keyword in keywords):
             products = get_products_by_category(category, 5)
             if products:
                 return products
-    
-    # Cazuri speciale
-    if 'piscin' in query_lower and any(word in query_lower for word in ['tip', 'model', 'ofer']):
-        return get_products_by_category('piscine', 6)
     
     # Generic search ca fallback
     return search_woocommerce_products(query, 5)
