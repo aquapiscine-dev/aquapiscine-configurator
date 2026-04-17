@@ -128,13 +128,20 @@ CATEGORY_KEYWORDS = {
 SYSTEM_PROMPT = """Ești asistent vânzări AI pentru AquaPiscine.ro.
 
 Răspunzi la întrebări despre piscine și echipamente.
-Când vorbești despre produse, MENȚIONEAZĂ produsele din catalogul furnizat.
+
+IMPORTANT: 
+- NU menționa nume specifice de produse în răspunsul tău
+- NU include prețuri în text
+- Produsele din catalogul furnizat vor fi afișate AUTOMAT sub mesajul tău cu imagini, prețuri și link-uri
+- Vorbește despre CATEGORII și TIPURI de produse, nu despre produse individuale
+- Exemplu CORECT: "Avem reduceri la echipamente de curățare și filtrare"
+- Exemplu GREȘIT: "Avem Aspiratorul Zodiac la 2500 RON"
 
 Contact:
 - Telefon: 0772 286 246
 - Email: contact@aquapiscine.ro
 
-Răspunde în limba română, profesionist și util."""
+Răspunde în limba română, profesionist, concis și util."""
 
 def search_woocommerce_products(query, per_page=5):
     """Search products in WooCommerce"""
@@ -170,9 +177,9 @@ def search_woocommerce_products(query, per_page=5):
         return []
 
 def get_products_by_category(category_slug, per_page=5):
-    """Get products by category"""
+    """Get products by category and return category info + products"""
     try:
-        # First get category ID
+        # First get category ID and info
         cat_url = f"{WP_URL}/wp-json/wc/v3/products/categories"
         cat_response = requests.get(
             cat_url,
@@ -182,9 +189,18 @@ def get_products_by_category(category_slug, per_page=5):
         )
         
         if cat_response.status_code != 200 or not cat_response.json():
-            return []
+            return {'products': [], 'category': None}
         
-        category_id = cat_response.json()[0]['id']
+        category_data = cat_response.json()[0]
+        category_id = category_data['id']
+        
+        # Category info
+        category_info = {
+            'name': category_data['name'],
+            'image': category_data.get('image', {}).get('src') if category_data.get('image') else None,
+            'link': f"{WP_URL}/categorie-produs/{category_slug}/",
+            'count': category_data.get('count', 0)
+        }
         
         # Get products
         url = f"{WP_URL}/wp-json/wc/v3/products"
@@ -197,7 +213,7 @@ def get_products_by_category(category_slug, per_page=5):
         
         if response.status_code == 200:
             products = response.json()
-            return [{
+            product_list = [{
                 'id': p['id'],
                 'name': p['name'],
                 'price': float(p['price']) if p['price'] else 0,
@@ -206,10 +222,13 @@ def get_products_by_category(category_slug, per_page=5):
                 'stock_status': p['stock_status'],
                 'short_description': p['short_description']
             } for p in products]
-        return []
+            
+            return {'products': product_list, 'category': category_info}
+        
+        return {'products': [], 'category': category_info}
     except Exception as e:
         print(f"Category error: {e}")
-        return []
+        return {'products': [], 'category': None}
 
 def find_relevant_products(query):
     """Find relevant products based on query - TOATE cele 76 categorii"""
@@ -219,12 +238,12 @@ def find_relevant_products(query):
     for pattern, category in CATEGORY_KEYWORDS.items():
         keywords = pattern.split('|')
         if any(keyword in query_lower for keyword in keywords):
-            products = get_products_by_category(category, 5)
-            if products:
-                return products
+            result = get_products_by_category(category, 5)
+            if result['products']:
+                return result
     
     # Generic search ca fallback
-    return search_woocommerce_products(query, 5)
+    return {'products': search_woocommerce_products(query, 5), 'category': None}
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -239,8 +258,10 @@ class handler(BaseHTTPRequestHandler):
             
             user_message = data['message'].strip()
             
-            # Find relevant products
-            products = find_relevant_products(user_message)
+            # Find relevant products and category
+            result = find_relevant_products(user_message)
+            products = result['products']
+            category = result['category']
             
             # Build context with products
             products_context = ""
@@ -278,6 +299,7 @@ class handler(BaseHTTPRequestHandler):
                 "success": True,
                 "response": ai_response,
                 "products": products[:5],
+                "category": category,
                 "conversation_id": data.get('conversation_id', 'new')
             })
             

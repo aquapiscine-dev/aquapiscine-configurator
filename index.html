@@ -462,10 +462,24 @@
             scrollToBottom();
         }
 
-        function addAssistantMessage(text, products = []) {
+        function addAssistantMessage(text, products = [], category = null) {
             const messagesDiv = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message message-assistant';
+            
+            let categoryHtml = '';
+            if (category && category.name) {
+                categoryHtml = `
+                    <div class="product-card" style="background: linear-gradient(135deg, #10a37f 0%, #0d8a6a 100%); border: none;">
+                        ${category.image ? `<img src="${category.image}" alt="${category.name}" class="product-image">` : ''}
+                        <div class="product-info">
+                            <div class="product-name" style="color: white; font-size: 18px;">📂 ${category.name}</div>
+                            <div class="product-price" style="color: #e0e0e0;">${category.count} produse disponibile</div>
+                            <a href="${category.link}" target="_blank" class="product-link" style="background: white; color: #10a37f;">Vezi Toate Produsele →</a>
+                        </div>
+                    </div>
+                `;
+            }
             
             let productsHtml = '';
             if (products && products.length > 0) {
@@ -486,6 +500,7 @@
                 <div class="message-avatar avatar-assistant">🤖</div>
                 <div class="message-content">
                     <p>${formatText(text)}</p>
+                    ${categoryHtml}
                     ${productsHtml}
                 </div>
             `;
@@ -531,7 +546,7 @@
                 
                 if (data.success) {
                     conversationId = data.conversation_id;
-                    addAssistantMessage(data.response, data.products || []);
+                    addAssistantMessage(data.response, data.products || [], data.category || null);
                 } else {
                     addAssistantMessage('Ne pare rău, a apărut o eroare. Te rugăm să încerci din nou.');
                 }
