@@ -111,22 +111,41 @@ def find_relevant_products(query):
     """Find relevant products based on query"""
     query_lower = query.lower()
     
-    # Category mapping cu sluguri corecte din WooCommerce
+    # Mapping complet categorii WooCommerce
+    category_map = {
+        'pompă|pompe|căldur|caldur': 'pompe-de-caldura',
+        'filtr': 'filtrare',
+        'robot|aspirat|curat': 'aspiratoare-automate',
+        'led|iluminat|lumina': 'iluminare',
+        'clor|chimic|tratare|alg': 'chimicale-pentru-piscina',
+        'încălz|incalz': 'incalzire-piscina',
+        'acoperire|prelata': 'acoperire-piscina',
+        'scara|scarita': 'scari-piscina',
+        'duș|dus': 'dusuri-piscina',
+        'spa|jacuzzi|hidromasaj': 'cazi-hidromasaj',
+        'sauna': 'cabine-saune',
+        'electroliz|sare': 'aparate-electroliza-si-hidroliza',
+        'liner|folii': 'liner-piscina',
+        'skimmer': 'skimmere',
+        'duze|jet': 'duze-piscina',
+        'vana|robinet': 'vane-piscina',
+        'termostat|control': 'automatizari-piscina'
+    }
+    
+    # Verifică fiecare pattern
+    for pattern, category in category_map.items():
+        keywords = pattern.split('|')
+        if any(keyword in query_lower for keyword in keywords):
+            products = get_products_by_category(category, 5)
+            if products:
+                return products
+    
+    # Cazuri speciale
     if 'piscin' in query_lower and any(word in query_lower for word in ['tip', 'model', 'ofer']):
         return get_products_by_category('piscine', 6)
-    elif 'pompă' in query_lower or 'pompe' in query_lower or 'căldur' in query_lower or 'caldur' in query_lower:
-        return get_products_by_category('pompe-de-caldura', 5)
-    elif 'filtr' in query_lower:
-        return get_products_by_category('filtrare', 5)
-    elif 'led' in query_lower or 'iluminat' in query_lower:
-        return get_products_by_category('iluminare', 5)
-    elif 'clor' in query_lower or 'tratare' in query_lower or 'chimic' in query_lower:
-        return get_products_by_category('chimicale-pentru-piscina', 5)
-    elif 'încălz' in query_lower or 'incalz' in query_lower:
-        return get_products_by_category('incalzire-piscina', 5)
-    else:
-        # Generic search
-        return search_woocommerce_products(query, 5)
+    
+    # Generic search ca fallback
+    return search_woocommerce_products(query, 5)
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
