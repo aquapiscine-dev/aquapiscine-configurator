@@ -21,62 +21,108 @@ WP_URL = os.getenv('WP_URL', 'https://aquapiscine.ro')
 WP_CONSUMER_KEY = os.getenv('WP_CONSUMER_KEY')
 WP_CONSUMER_SECRET = os.getenv('WP_CONSUMER_SECRET')
 
-# Complete Category Mapping - 76 categories
+# Complete Category Mapping - ALL 76 categories with comprehensive keywords
 CATEGORY_KEYWORDS = {
-    'pompă|pompe|căldur|caldur|heat pump': 'pompe-de-caldura',
-    'încălz|incalz|heating': 'incalzire-piscina',
-    'solar': 'incalzire-solara',
-    'schimbat|exchanger': 'schimbatoare-de-caldura',
-    'electric|încălzitor': 'incalzitoare-electrice',
-    'filtr|filter': 'filtrare-piscina',
-    'kit filtr': 'kituri-filtrare',
-    'material filtrant|nisip|sticla': 'material-filtrant',
-    'robot|aspirat|curat|clean': 'curatare-piscina',
-    'aspirator automat': 'aspiratoare-automate',
-    'aspirator manual': 'aspiratoare-manuale',
-    'clor|chimic|tratare|ph|alg': 'tratare-piscina',
-    'chimicale piscina': 'chimicale-pentru-piscina',
-    'chimicale spa': 'chimicale-pentru-spa',
-    'electroliz|sare|salt': 'aparate-electroliza-si-hidroliza',
-    'substanțe tratare': 'substante-pentru-tratare',
-    'sterilizator|uv': 'sterilizatoare-uv',
-    'trusă analiză|test': 'truse-de-analiza',
-    'pompă dozatoare|doser': 'pompe-dozatoare',
-    'acoperire|prelata|cover': 'acoperire-piscina',
-    'lamelara|lamele': 'acoperire-lamelara',
-    'policarbonat': 'acoperire-policarbonat',
-    'placare|finisa': 'placare-piscina',
-    'liner|folii|folie': 'liner-si-accesorii',
-    'mozaic': 'mozaic',
-    'dale|bordur': 'dale-si-borduri',
-    'adeziv': 'adezivi',
-    'chit|rosturi': 'chit-de-rosturi',
-    'hidroizola': 'hidroizolatii',
-    'vopsea piscin': 'vopsea-pentru-piscine',
-    'decorațiuni|decor': 'decoratiuni-piscina',
-    'led|iluminat|lumina|light': 'iluminare-piscine',
-    'piscin|pool|bazin': 'tipuri-de-piscine',
-    'fibră|fibra|fiberglass': 'piscine-fibra-de-sticla',
-    'isoblok': 'piscine-isoblok',
-    'suprateran': 'piscine-supraterane',
-    'spa|jacuzzi|hidromasaj': 'sauna-si-spa',
-    'spa portabil': 'spa-portabil',
-    'sauna|saune': 'saune-uscate',
-    'sauna umeda': 'saune-umede',
-    'cabina sauna': 'cabine-saune',
-    'soba electrica': 'sobe-electrice',
-    'generator abur': 'generatoare-de-abur',
-    'dezumidificator': 'dezumidificatoare',
-    'lemn sauna': 'lemn-si-accesorii',
-    'arome|esente': 'arome-si-solutii-de-curatare',
-    'abs|pvc|component': 'componente-abs-si-pvc',
-    'țevi|fitinguri|teava': 'tevi-si-fitinguri',
-    'pompă piscina|circulation': 'pompe-piscina',
-    'accesor': 'accesorii-piscine',
-    'scara|scarita|ladder|balustrad': 'scari-si-balustrade',
-    'echipament exterior': 'echipamente-exterioare',
-    'tablou|panou comanda': 'panouri-de-comanda',
-    'lichidare|oferta|discount': 'lichidari-de-stoc'
+    # Încălzire (138 produse)
+    'pompă|pompe|căldur|caldur|heat|heatpump': 'pompe-de-caldura',
+    'încălz|incalz|heating|warm': 'incalzire-piscina',
+    'solar|soare': 'incalzire-solara',
+    'schimbat|exchanger|heat exchanger': 'schimbatoare-de-caldura',
+    'electric|încălzitor|heater': 'incalzitoare-electrice',
+    'lemne|wood|fireplace': 'incalzitoare-pe-lemne',
+    
+    # Filtrare (188 produse)
+    'filtr|filter|filtru': 'filtrare-piscina',
+    'kit filtr|filtration kit': 'kituri-filtrare',
+    'material filtrant|nisip|sticla|sand|glass': 'material-filtrant',
+    'piese filtr|filter parts': 'piese-schimb-filtre',
+    
+    # Curățare (97 produse)
+    'robot|aspirat|curat|clean|vacuum': 'curatare-piscina',
+    'aspirator automat|automatic cleaner': 'aspiratoare-automate',
+    'aspirator manual|manual cleaner': 'aspiratoare-manuale',
+    'echipament curat|cleaning equipment': 'echipamente-de-curatare',
+    
+    # Tratare apă (167 produse)
+    'clor|chimic|tratare|ph|alg|chlorine|chemical': 'tratare-piscina',
+    'chimicale piscina|pool chemicals': 'chimicale-pentru-piscina',
+    'chimicale spa|spa chemicals': 'chimicale-pentru-spa',
+    'electroliz|sare|salt|electrolysis': 'aparate-electroliza-si-hidroliza',
+    'substanțe|substance|treatment': 'substante-pentru-tratare',
+    'sterilizator|uv|ultraviolet': 'sterilizatoare-uv',
+    'trusă|analiză|test|kit': 'truse-de-analiza',
+    'dozator|doser|dosing': 'pompe-dozatoare',
+    
+    # Acoperiri (28 produse)
+    'acoperire|prelata|cover|covering': 'acoperire-piscina',
+    'lamelara|lamele|slat|slatted': 'acoperire-lamelara',
+    'policarbonat|polycarbonate': 'acoperire-policarbonat',
+    'derulat|roller|reel': 'prelate-si-derulatoare',
+    
+    # Placare și finisare (226 produse)
+    'placare|finisa|finishing|tiling': 'placare-piscina',
+    'liner|folii|folie|membrane': 'liner-si-accesorii',
+    'mozaic|mosaic|tile': 'mozaic',
+    'dale|bordur|coping|edging': 'dale-si-borduri',
+    'adeziv|adhesive|glue': 'adezivi',
+    'adeziv pvc|pvc glue': 'adezivi-lipire-pvc',
+    'chit|rosturi|grout|joint': 'chit-de-rosturi',
+    'hidroizola|waterproof|sealing': 'hidroizolatii',
+    'vopsea|paint|coating': 'vopsea-pentru-piscine',
+    'decorațiuni|decor|decoration': 'decoratiuni-piscina',
+    'reparati|repair|fix': 'reparatii-si-aplicatii-speciale',
+    
+    # Iluminare (75 produse)
+    'led|iluminat|lumina|light|lighting|lampă': 'iluminare-piscine',
+    
+    # Tipuri piscine (32 produse)
+    'construi|constru|vreau piscin|tip|model|build': 'tipuri-de-piscine',
+    'fibră|fibra|fiberglass|sticla': 'piscine-fibra-de-sticla',
+    'isoblok|iso': 'piscine-isoblok',
+    'suprateran|above ground': 'piscine-supraterane',
+    'poliester|polipropilen|polyester': 'tipuri-de-piscine',
+    
+    # Spa și saună (193 produse)
+    'spa|jacuzzi|hidromasaj|hot tub': 'sauna-si-spa',
+    'spa portabil|portable spa': 'spa-portabil',
+    'spa public|commercial spa': 'spa-public',
+    'sauna|saune|steam': 'saune-uscate',
+    'sauna umeda|wet sauna': 'saune-umede',
+    'cabina|cabin': 'cabine-saune',
+    'soba|stove|heater': 'sobe-electrice',
+    'generator|steam generator': 'generatoare-de-abur',
+    'dezumidificator|dehumidifier': 'dezumidificatoare',
+    'lemn|wood|timber': 'lemn-si-accesorii',
+    'usa|door|usi': 'usi-pentru-saune',
+    'arome|esente|fragrance|scent': 'arome-si-solutii-de-curatare',
+    
+    # Componente (144 produse)
+    'abs|pvc|component|plastic': 'componente-abs-si-pvc',
+    'component abs|abs parts': 'componente-abs',
+    'piese abs|abs spare': 'piese-schimb-abs',
+    'țevi|fitinguri|teava|pipe|fitting': 'tevi-si-fitinguri',
+    
+    # Pompe (75 produse)
+    'pompă piscina|circulation|pump': 'pompe-piscina',
+    'piese pompă|pump parts': 'piese-schimb-pompe',
+    
+    # Accesorii (167 produse)
+    'accesor|accessory|accessories': 'accesorii-piscine',
+    'accesor olimpic|olympic': 'accesorii-piscine-olimpice',
+    'accesor spa|spa accessories': 'accesorii-spa',
+    'accesor confort|comfort': 'accesorii-confort',
+    'scara|scarita|ladder|stairs|balustrad': 'scari-si-balustrade',
+    'echipament exterior|outdoor|furniture': 'echipamente-exterioare',
+    'înot contracurent|counter current|jet': 'inot-contracurent',
+    'cascade|waterfall|fountain|fântână': 'echipamente-exterioare',
+    
+    # Control și automatizare
+    'tablou|panou|control|panel': 'panouri-de-comanda',
+    'tablou electric|electrical panel': 'tablouri-comanda',
+    
+    # Oferte
+    'lichidare|oferta|discount|sale|promo': 'lichidari-de-stoc',
+    'aquapiscine|brand': 'aquapiscine'
 }
 
 SYSTEM_PROMPT = """Ești asistent vânzări AI pentru AquaPiscine.ro.
