@@ -247,6 +247,40 @@
             max-width: 800px;
             margin: 0 auto;
             position: relative;
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        
+        .upload-button {
+            background: #40414f;
+            border: 1px solid #565869;
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #ececf1;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 48px;
+            height: 48px;
+        }
+        
+        .upload-button:hover {
+            background: #565869;
+        }
+        
+        .upload-button input {
+            display: none;
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 8px;
         }
         
         .chat-input {
@@ -372,18 +406,26 @@
             <div class="welcome-message" id="welcomeMessage">
                 <h2>Bun venit la AquaPiscine!</h2>
                 <p>Sunt asistentul tău AI pentru piscine și echipamente. Cum te pot ajuta astăzi?</p>
-                <div class="example-prompts">
-                    <div class="example-prompt" onclick="sendExample('Cât costă o pompă de căldură pentru 40m³?')">
-                        💰 Cât costă o pompă de căldură pentru 40m³?
-                    </div>
-                    <div class="example-prompt" onclick="sendExample('Vreau să configurez o piscină 8x4m')">
-                        ⚙️ Vreau să configurez o piscină 8x4m
-                    </div>
-                    <div class="example-prompt" onclick="sendExample('Ce sistem de filtrare recomandați?')">
-                        🔧 Ce sistem de filtrare recomandați?
-                    </div>
-                    <div class="example-prompt" onclick="sendExample('Aveți livrare gratuită?')">
-                        🚚 Aveți livrare gratuită?
+                
+                <div class="chat-input-container" style="margin-top: 24px; padding: 0; background: transparent; border: none;">
+                    <div class="chat-input-wrapper">
+                        <label class="upload-button" title="Upload imagine teren">
+                            📷
+                            <input type="file" accept="image/*" onchange="handleImageUpload(event)">
+                        </label>
+                        <div style="flex: 1; position: relative;">
+                            <textarea 
+                                id="chatInput" 
+                                class="chat-input" 
+                                placeholder="Scrie mesajul tău aici..."
+                                rows="1"
+                                onkeydown="handleKeyPress(event)"
+                            ></textarea>
+                            <button class="send-button" id="sendButton" onclick="sendMessage()">
+                                ➤
+                            </button>
+                            <div id="imagePreviewContainer"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -397,26 +439,12 @@
                 <span></span>
             </div>
         </div>
-        
-        <div class="chat-input-container">
-            <div class="chat-input-wrapper">
-                <textarea 
-                    id="chatInput" 
-                    class="chat-input" 
-                    placeholder="Scrie mesajul tău aici..."
-                    rows="1"
-                    onkeydown="handleKeyPress(event)"
-                ></textarea>
-                <button class="send-button" id="sendButton" onclick="sendMessage()">
-                    ➤
-                </button>
-            </div>
-        </div>
     </div>
 
     <script>
         const API_URL = 'https://aquapiscine-configurator.vercel.app';
         let conversationId = null;
+        let uploadedImage = null;
 
         function hideWelcome() {
             const welcome = document.getElementById('welcomeMessage');
@@ -525,6 +553,65 @@
         function sendExample(text) {
             document.getElementById('chatInput').value = text;
             sendMessage();
+        }
+
+        async function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('imagePreviewContainer');
+                preview.innerHTML = `
+                    <div style="margin-top: 8px; position: relative; display: inline-block;">
+                        <img src="${e.target.result}" class="image-preview" alt="Preview">
+                        <button onclick="clearImage()" style="position: absolute; top: 4px; right: 4px; background: #ff4444; border: none; border-radius: 50%; width: 24px; height: 24px; color: white; cursor: pointer;">✕</button>
+                    </div>
+                `;
+                uploadedImage = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            
+            // Auto-send for analysis
+            setTimeout(() => analyzeImage(), 500);
+        }
+
+        function clearImage() {
+            uploadedImage = null;
+            document.getElementById('imagePreviewContainer').innerHTML = '';
+        }
+
+        async function analyzeImage() {
+            if (!uploadedImage) return;
+            
+            hideWelcome();
+            addUserMessage('📷 Imagine teren încărcată pentru analiză');
+            showTyping();
+            
+            try {
+                const response = await fetch(`${API_URL}/api/analyze_image`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        image: uploadedImage
+                    })
+                });
+                
+                const data = await response.json();
+                
+                hideTyping();
+                
+                if (data.success) {
+                    addAssistantMessage(data.analysis);
+                    clearImage();
+                } else {
+                    addAssistantMessage('Ne pare rău, nu am putut analiza imaginea. ' + (data.error || ''));
+                }
+            } catch (error) {
+                hideTyping();
+                addAssistantMessage('Eroare la analiza imaginii. Te rugăm să încerci din nou.');
+            }
         }
 
         function handleKeyPress(event) {
