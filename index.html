@@ -3,253 +3,568 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AquaPiscine Configurator API - Test Interface</title>
+    <title>AquaPiscine AI Assistant</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #343541;
+            height: 100vh;
+            overflow: hidden;
         }
-        .container {
-            max-width: 1200px;
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 900px;
             margin: 0 auto;
+            background: #343541;
         }
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
+        
+        .chat-header {
+            background: #202123;
+            padding: 16px 20px;
+            border-bottom: 1px solid #444654;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .header h1 {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-        .header p {
-            font-size: 20px;
-            opacity: 0.9;
-        }
-        .status {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
-        .status h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-        .endpoint {
-            background: #f8f9fa;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-family: monospace;
-        }
-        .endpoint.success { border-left: 4px solid #00c853; }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
-        .card h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 22px;
-        }
-        .card p {
-            color: #666;
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            margin-bottom: 10px;
-            resize: vertical;
-        }
-        button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 16px;
+        
+        .chat-header h1 {
+            color: #ececf1;
+            font-size: 18px;
             font-weight: 600;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo {
+            font-size: 24px;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: #10a37f;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+        }
+        
+        .message {
+            margin-bottom: 24px;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message-user {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: #343541;
+        }
+        
+        .message-assistant {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: #444654;
+        }
+        
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .avatar-user {
+            background: #5436da;
+        }
+        
+        .avatar-assistant {
+            background: #10a37f;
+        }
+        
+        .message-content {
+            flex: 1;
+            color: #ececf1;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        
+        .message-content p {
+            margin-bottom: 12px;
+        }
+        
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .product-card {
+            background: #202123;
+            border: 1px solid #565869;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 12px 0;
+            display: flex;
+            gap: 16px;
+            transition: all 0.2s;
+        }
+        
+        .product-card:hover {
+            border-color: #10a37f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 163, 127, 0.2);
+        }
+        
+        .product-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #343541;
+        }
+        
+        .product-info {
+            flex: 1;
+        }
+        
+        .product-name {
+            color: #ececf1;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .product-price {
+            color: #10a37f;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 8px 0;
+        }
+        
+        .product-stock {
+            color: #10a37f;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        
+        .product-link {
+            display: inline-block;
+            background: #10a37f;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .product-link:hover {
+            background: #0d8c6a;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 16px;
+            background: #444654;
+        }
+        
+        .typing-indicator.active {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            padding-left: 48px;
+        }
+        
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: #ececf1;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+        
+        .chat-input-container {
+            padding: 20px;
+            background: #343541;
+            border-top: 1px solid #444654;
+        }
+        
+        .chat-input-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .chat-input {
             width: 100%;
-            transition: background 0.3s;
+            background: #40414f;
+            border: 1px solid #565869;
+            border-radius: 12px;
+            padding: 16px 52px 16px 16px;
+            color: #ececf1;
+            font-size: 15px;
+            font-family: inherit;
+            resize: none;
+            max-height: 200px;
+            line-height: 1.5;
         }
-        button:hover {
-            background: #5568d3;
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: #10a37f;
+            box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.1);
         }
-        button:disabled {
-            background: #ccc;
+        
+        .chat-input::placeholder {
+            color: #8e8ea0;
+        }
+        
+        .send-button {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            width: 32px;
+            height: 32px;
+            background: #10a37f;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .send-button:hover:not(:disabled) {
+            background: #0d8c6a;
+        }
+        
+        .send-button:disabled {
+            background: #565869;
             cursor: not-allowed;
         }
-        .response {
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-            font-family: monospace;
-            font-size: 13px;
-            max-height: 300px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        .response.success {
-            border-color: #00c853;
-            background: #e8f5e9;
-        }
-        .response.error {
-            border-color: #ff3d00;
-            background: #ffebee;
-        }
-        .loading {
-            display: none;
+        
+        .welcome-message {
             text-align: center;
-            color: #667eea;
-            margin: 10px 0;
+            padding: 60px 20px;
+            color: #8e8ea0;
         }
-        .loading.active {
-            display: block;
+        
+        .welcome-message h2 {
+            color: #ececf1;
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+        
+        .welcome-message p {
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .example-prompts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .example-prompt {
+            background: #444654;
+            border: 1px solid #565869;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #ececf1;
+            font-size: 14px;
+        }
+        
+        .example-prompt:hover {
+            background: #40414f;
+            border-color: #10a37f;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #343541;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #565869;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6e6e80;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🏊 AquaPiscine Configurator</h1>
-            <p>API Test Interface - Powered by Groq AI</p>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>
+                <span class="logo">🏊</span>
+                AquaPiscine AI Assistant
+            </h1>
+            <div class="status-indicator"></div>
         </div>
-
-        <div class="status">
-            <h2>📊 API Status</h2>
-            <div class="endpoint success">✅ Base URL: https://aquapiscine-configurator.vercel.app</div>
-            <div class="endpoint success">✅ Chat Support: /api/chat_complete</div>
-            <div class="endpoint">⏳ Configurator: /api/configurator (coming soon)</div>
-            <div class="endpoint">⏳ Image Analysis: /api/analyze_image (coming soon)</div>
-        </div>
-
-        <div class="grid">
-            <!-- Chat Test -->
-            <div class="card">
-                <h3>💬 Chat Support AI</h3>
-                <p>Testează asistentul vânzări AI cu Groq</p>
-                <textarea id="chatMessage" rows="3" placeholder="Ex: Cât costă o pompă de căldură?">Salut! Cât costă o pompă de căldură pentru o piscină de 40m³?</textarea>
-                <button onclick="testChat()">Trimite Mesaj</button>
-                <div class="loading" id="chatLoading">⏳ Se procesează...</div>
-                <div class="response" id="chatResponse"></div>
-            </div>
-
-            <!-- WooCommerce Test -->
-            <div class="card">
-                <h3>🛒 WooCommerce Integration</h3>
-                <p>Testează conexiunea la magazin</p>
-                <textarea id="productSearch" rows="3" placeholder="Caută produse...">pompă căldură</textarea>
-                <button onclick="testWooCommerce()" disabled>Caută Produse (Soon)</button>
-                <div class="loading" id="wooLoading">⏳ Se caută...</div>
-                <div class="response" id="wooResponse"></div>
-            </div>
-
-            <!-- Configurator Test -->
-            <div class="card">
-                <h3>⚙️ Configurator Piscine</h3>
-                <p>Configurare conversațională AI</p>
-                <textarea id="configMessage" rows="3" placeholder="Ex: Vreau o piscină 8x4m">Vreau o piscină 8x4 metri, tip fibră de sticlă</textarea>
-                <button onclick="testConfigurator()" disabled>Configurează (Soon)</button>
-                <div class="loading" id="configLoading">⏳ Se configurează...</div>
-                <div class="response" id="configResponse"></div>
-            </div>
-
-            <!-- Image Analysis Test -->
-            <div class="card">
-                <h3>📸 Analiză Imagine Teren</h3>
-                <p>Groq Vision pentru analiză teren</p>
-                <input type="file" id="imageInput" accept="image/*" style="margin-bottom: 10px;">
-                <button onclick="testImageAnalysis()" disabled>Analizează Imagine (Soon)</button>
-                <div class="loading" id="imageLoading">⏳ Se analizează...</div>
-                <div class="response" id="imageResponse"></div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message" id="welcomeMessage">
+                <h2>Bun venit la AquaPiscine!</h2>
+                <p>Sunt asistentul tău AI pentru piscine și echipamente. Cum te pot ajuta astăzi?</p>
+                <div class="example-prompts">
+                    <div class="example-prompt" onclick="sendExample('Cât costă o pompă de căldură pentru 40m³?')">
+                        💰 Cât costă o pompă de căldură pentru 40m³?
+                    </div>
+                    <div class="example-prompt" onclick="sendExample('Vreau să configurez o piscină 8x4m')">
+                        ⚙️ Vreau să configurez o piscină 8x4m
+                    </div>
+                    <div class="example-prompt" onclick="sendExample('Ce sistem de filtrare recomandați?')">
+                        🔧 Ce sistem de filtrare recomandați?
+                    </div>
+                    <div class="example-prompt" onclick="sendExample('Aveți livrare gratuită?')">
+                        🚚 Aveți livrare gratuită?
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="card">
-            <h3>📖 Documentație API</h3>
-            <p><strong>Chat Support Endpoint:</strong></p>
-            <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto;">
-POST /api/chat_complete
-Content-Type: application/json
-
-{
-  "message": "Mesajul tău aici"
-}
-
-Response:
-{
-  "success": true,
-  "response": "Răspuns AI...",
-  "conversation_id": "uuid"
-}</pre>
+        
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="message-avatar avatar-assistant">🤖</div>
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <textarea 
+                    id="chatInput" 
+                    class="chat-input" 
+                    placeholder="Scrie mesajul tău aici..."
+                    rows="1"
+                    onkeydown="handleKeyPress(event)"
+                ></textarea>
+                <button class="send-button" id="sendButton" onclick="sendMessage()">
+                    ➤
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
         const API_URL = 'https://aquapiscine-configurator.vercel.app';
+        let conversationId = null;
 
-        async function testChat() {
-            const message = document.getElementById('chatMessage').value;
-            const loading = document.getElementById('chatLoading');
-            const response = document.getElementById('chatResponse');
-            
-            loading.classList.add('active');
-            response.textContent = '';
-            response.className = 'response';
-            
-            try {
-                const res = await fetch(`${API_URL}/api/chat_complete`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ message })
-                });
-                
-                const data = await res.json();
-                
-                response.textContent = JSON.stringify(data, null, 2);
-                response.classList.add(data.success ? 'success' : 'error');
-            } catch (error) {
-                response.textContent = `Error: ${error.message}`;
-                response.classList.add('error');
-            } finally {
-                loading.classList.remove('active');
+        function hideWelcome() {
+            const welcome = document.getElementById('welcomeMessage');
+            if (welcome) {
+                welcome.style.display = 'none';
             }
         }
 
-        async function testWooCommerce() {
-            alert('WooCommerce endpoint coming soon!');
+        function addUserMessage(text) {
+            hideWelcome();
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-user';
+            messageDiv.innerHTML = `
+                <div class="message-avatar avatar-user">👤</div>
+                <div class="message-content">
+                    <p>${escapeHtml(text)}</p>
+                </div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
         }
 
-        async function testConfigurator() {
-            alert('Configurator endpoint coming soon!');
+        function addAssistantMessage(text, products = []) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-assistant';
+            
+            let productsHtml = '';
+            if (products && products.length > 0) {
+                productsHtml = products.map(product => `
+                    <div class="product-card">
+                        ${product.image ? `<img src="${product.image}" alt="${product.name}" class="product-image">` : ''}
+                        <div class="product-info">
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-price">${formatPrice(product.price)} RON</div>
+                            ${product.stock_status === 'instock' ? '<div class="product-stock">✅ În stoc</div>' : ''}
+                            <a href="${product.permalink}" target="_blank" class="product-link">Vezi Detalii →</a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar avatar-assistant">🤖</div>
+                <div class="message-content">
+                    <p>${formatText(text)}</p>
+                    ${productsHtml}
+                </div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
         }
 
-        async function testImageAnalysis() {
-            alert('Image analysis endpoint coming soon!');
+        function showTyping() {
+            document.getElementById('typingIndicator').classList.add('active');
+            scrollToBottom();
         }
+
+        function hideTyping() {
+            document.getElementById('typingIndicator').classList.remove('active');
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('sendButton').disabled = true;
+            
+            addUserMessage(message);
+            showTyping();
+            
+            try {
+                const response = await fetch(`${API_URL}/api/chat_complete`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        message: message,
+                        conversation_id: conversationId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                hideTyping();
+                
+                if (data.success) {
+                    conversationId = data.conversation_id;
+                    addAssistantMessage(data.response, data.products || []);
+                } else {
+                    addAssistantMessage('Ne pare rău, a apărut o eroare. Te rugăm să încerci din nou.');
+                }
+            } catch (error) {
+                hideTyping();
+                addAssistantMessage('Ne pare rău, nu pot conecta la server. Te rugăm să încerci din nou.');
+            } finally {
+                document.getElementById('sendButton').disabled = false;
+                input.focus();
+            }
+        }
+
+        function sendExample(text) {
+            document.getElementById('chatInput').value = text;
+            sendMessage();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function scrollToBottom() {
+            const messages = document.getElementById('chatMessages');
+            setTimeout(() => {
+                messages.scrollTop = messages.scrollHeight;
+            }, 100);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatText(text) {
+            return escapeHtml(text).replace(/\n/g, '<br>');
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('ro-RO').format(price);
+        }
+
+        // Auto-resize textarea
+        document.getElementById('chatInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+        });
+
+        // Focus input on load
+        window.addEventListener('load', () => {
+            document.getElementById('chatInput').focus();
+        });
     </script>
 </body>
 </html>
