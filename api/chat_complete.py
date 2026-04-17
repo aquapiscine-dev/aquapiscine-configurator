@@ -76,9 +76,9 @@ CATEGORY_KEYWORDS = {
     'led|iluminat|lumina|light|lighting|lampă': 'iluminare-piscine',
     
     # Tipuri piscine (32 produse)
-    'construi|constru|vreau piscin|tip piscin|model piscin|build|fac piscin|parare|dimensiune|10x|8x|6x|12x': 'tipuri-de-piscine',
+    'construi|constru|vreau piscin|tip piscin|model piscin|build|fac piscin|parare|dimensiune|10x|8x|6x|12x|configurare|configurez': 'tipuri-de-piscine',
     'fibră|fibra|fiberglass|sticla': 'piscine-fibra-de-sticla',
-    'isoblok|iso': 'piscine-isoblok',
+    'isoblok|iso|kit piscin|kit construct': 'piscine-isoblok',
     'suprateran|above ground': 'piscine-supraterane',
     'poliester|polipropilen|polyester|prefabricat': 'tipuri-de-piscine',
     
@@ -244,6 +244,11 @@ def find_relevant_products(query):
         if any(keyword in query_lower for keyword in keywords):
             if category not in matched_categories:
                 matched_categories.append(category)
+    
+    # SPECIAL: Dacă întreabă despre configurare/construire piscină, adaugă kit-uri isoblok
+    if any(word in query_lower for word in ['configurare', 'configurez', 'construi', 'constru', 'fac piscin']):
+        if 'piscine-isoblok' not in matched_categories:
+            matched_categories.insert(0, 'piscine-isoblok')  # Pune kit-urile PRIMUL
     
     # Dacă găsește multiple categorii, ia produse din fiecare
     if len(matched_categories) > 1:
