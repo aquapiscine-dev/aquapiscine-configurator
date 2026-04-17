@@ -76,11 +76,11 @@ CATEGORY_KEYWORDS = {
     'led|iluminat|lumina|light|lighting|lampă': 'iluminare-piscine',
     
     # Tipuri piscine (32 produse)
-    'construi|constru|vreau piscin|tip|model|build': 'tipuri-de-piscine',
+    'construi|constru|vreau piscin|tip piscin|model piscin|build|fac piscin|parare|dimensiune|10x|8x|6x|12x': 'tipuri-de-piscine',
     'fibră|fibra|fiberglass|sticla': 'piscine-fibra-de-sticla',
     'isoblok|iso': 'piscine-isoblok',
     'suprateran|above ground': 'piscine-supraterane',
-    'poliester|polipropilen|polyester': 'tipuri-de-piscine',
+    'poliester|polipropilen|polyester|prefabricat': 'tipuri-de-piscine',
     
     # Spa și saună (193 produse)
     'spa|jacuzzi|hidromasaj|hot tub': 'sauna-si-spa',
