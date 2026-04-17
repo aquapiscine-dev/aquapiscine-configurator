@@ -238,12 +238,12 @@ def find_relevant_products(query):
     for pattern, category in CATEGORY_KEYWORDS.items():
         keywords = pattern.split('|')
         if any(keyword in query_lower for keyword in keywords):
-            result = get_products_by_category(category, 5)
+            result = get_products_by_category(category, 10)
             if result['products']:
                 return result
     
     # Generic search ca fallback
-    return {'products': search_woocommerce_products(query, 5), 'category': None}
+    return {'products': search_woocommerce_products(query, 10), 'category': None}
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -267,7 +267,7 @@ class handler(BaseHTTPRequestHandler):
             products_context = ""
             if products:
                 products_context = "\n\nPRODUSE DISPONIBILE:\n"
-                for p in products[:5]:
+                for p in products[:10]:
                     products_context += f"- {p['name']}: {p['price']:.0f} RON"
                     if p['stock_status'] == 'instock':
                         products_context += " (În stoc)"
@@ -298,7 +298,7 @@ class handler(BaseHTTPRequestHandler):
             self.send_json({
                 "success": True,
                 "response": ai_response,
-                "products": products[:5],
+                "products": products[:10],
                 "category": category,
                 "conversation_id": data.get('conversation_id', 'new')
             })
