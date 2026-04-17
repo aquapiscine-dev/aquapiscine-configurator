@@ -40,7 +40,12 @@ class handler(BaseHTTPRequestHandler):
             user_message = data['message'].strip()
             
             # Call Groq AI
-            client = Groq(api_key=random.choice(GROQ_KEYS))
+            api_key = random.choice([k for k in GROQ_KEYS if k])
+            if not api_key:
+                self.send_json({"success": False, "error": "API key not configured"}, 500)
+                return
+                
+            client = Groq(api_key=api_key)
             
             response = client.chat.completions.create(
                 model="llama-3.3-70b-versatile",
