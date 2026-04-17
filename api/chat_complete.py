@@ -100,7 +100,10 @@ CATEGORY_KEYWORDS = {
     'abs|pvc|component|plastic': 'componente-abs-si-pvc',
     'component abs|abs parts': 'componente-abs',
     'piese abs|abs spare': 'piese-schimb-abs',
-    'țevi|fitinguri|teava|pipe|fitting': 'tevi-si-fitinguri',
+    'țevi|fitinguri|teava|pipe|fitting|vane|vana|robinet': 'tevi-si-fitinguri',
+    'skimmer|skimmere': 'componente-abs-si-pvc',
+    'duze|duza|jet|refulare': 'componente-abs-si-pvc',
+    'sifon|fund|drain': 'componente-abs-si-pvc',
     
     # Pompe (75 produse)
     'pompă piscina|circulation|pump': 'pompe-piscina',
@@ -234,13 +237,34 @@ def find_relevant_products(query):
     """Find relevant products based on query - TOATE cele 76 categorii"""
     query_lower = query.lower()
     
-    # Verifică fiecare pattern din mapping-ul complet
+    # Colectează TOATE categoriile care match-uiesc
+    matched_categories = []
     for pattern, category in CATEGORY_KEYWORDS.items():
         keywords = pattern.split('|')
         if any(keyword in query_lower for keyword in keywords):
-            result = get_products_by_category(category, 10)
+            if category not in matched_categories:
+                matched_categories.append(category)
+    
+    # Dacă găsește multiple categorii, ia produse din fiecare
+    if len(matched_categories) > 1:
+        all_products = []
+        first_category = None
+        
+        for cat in matched_categories[:3]:  # Max 3 categorii
+            result = get_products_by_category(cat, 3)  # 3 produse per categorie
             if result['products']:
-                return result
+                all_products.extend(result['products'])
+                if not first_category:
+                    first_category = result['category']
+        
+        if all_products:
+            return {'products': all_products[:10], 'category': first_category}
+    
+    # O singură categorie - returnează 10 produse
+    elif len(matched_categories) == 1:
+        result = get_products_by_category(matched_categories[0], 10)
+        if result['products']:
+            return result
     
     # Generic search ca fallback
     return {'products': search_woocommerce_products(query, 10), 'category': None}
