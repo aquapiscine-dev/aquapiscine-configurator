@@ -74,7 +74,7 @@ def get_products_by_category(category_slug, per_page=5):
             cat_url,
             params={'slug': category_slug},
             auth=HTTPBasicAuth(WP_CONSUMER_KEY, WP_CONSUMER_SECRET),
-            timeout=10
+            timeout=30
         )
         
         if cat_response.status_code != 200 or not cat_response.json():
@@ -88,7 +88,7 @@ def get_products_by_category(category_slug, per_page=5):
             url,
             params={'category': category_id, 'per_page': per_page, 'status': 'publish'},
             auth=HTTPBasicAuth(WP_CONSUMER_KEY, WP_CONSUMER_SECRET),
-            timeout=10
+            timeout=30
         )
         
         if response.status_code == 200:
